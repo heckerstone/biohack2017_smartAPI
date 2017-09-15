@@ -1,534 +1,452 @@
-{
-    "openapi": "3.0",
-    "info": {
-        "version": "1.0.0",
-        "title": "AEOLUsrs API",
-        "description": "Documentation of the A curated and standardized adverse drug event resource to accelerate drug safety research (AEOLUS) web query services. Learn more about the underlying dataset [HERE](https://www.nature.com/articles/sdata201626)",
-        "termsOfService": "http://tsing.cm/terms/",
-        "contact": {
-            "name": "Juan M. Banda",
-            "x-role": "responsible developer",
-            "email": "jmbanda@stanford.edu",
-            "x-id": "http://orcid.org/0000-0001-8499-824X"
-        },
-        "x-maturity": "development",
-        "x-implementationLanguage": "PHP"
-    },
-    "externalDocs": {
-        "description": "Find more info here",
-        "url": "http://ec2-54-186-230-27.us-west-2.compute.amazonaws.com:8080/swagger-ui.html"
-    },
-    "x-externalResources": [
-        {
-            "x-url": "http://ec2-54-186-230-27.us-west-2.compute.amazonaws.com:8080/swagger-ui.html",
-            "x-type": "api documentation"
-        },
-        {
-            "x-url": "https://doi.org/10.1038/sdata.2016.26",
-            "x-type": "publication",
-            "x-description": "A curated and standardized adverse drug event resource to accelerate drug safety research"
-        },
-        {
-            "x-url": "https://twitter.com/drjmbanda",
-            "x-type": "social media"
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: AEOLUsrs API
+  description: >-
+    Documentation of the A curated and standardized adverse drug event resource
+    to accelerate drug safety research (AEOLUS) web query services. Learn more
+    about the underlying dataset [HERE](https://www.nature.com/articles/sdata201626)
+  termsOfService: 'http://tsing.cm/terms/'
+  contact:
+    name: Juan M. Banda
+    x-role: responsible developer
+    email: jmbanda@stanford.edu
+    x-id: 'http://orcid.org/0000-0001-8499-824X'
+  x-maturity: development
+  x-implementationLanguage: PHP
+externalDocs:
+  description: Find more info here
+  url: 'http://ec2-54-186-230-27.us-west-2.compute.amazonaws.com:8080/swagger-ui.html'
+x-externalResources:
+  - x-url: 'http://ec2-54-186-230-27.us-west-2.compute.amazonaws.com:8080/swagger-ui.html'
+    x-type: api documentation
+  - x-url: 'https://doi.org/10.1038/sdata.2016.26'
+    x-type: publication
+    x-description: 'A curated and standardized adverse drug event resource to accelerate drug safety research'
+  - x-url: 'https://twitter.com/drjmbanda'
+    x-type: social media
+servers:
+  - url: 'http://ec2-54-186-230-27.us-west-2.compute.amazonaws.com:8080/{basePath}'
+    description: Development server
+    x-location: 'California, USA'
+    variables:
+      basePath:
+        default: v3
+      port: {
+          "enum": [
+            '8080'
+          ],
+          "default": '8080'
         }
-    ],
-    "servers": [
-        {
-            "url": "http://ec2-54-186-230-27.us-west-2.compute.amazonaws.com:8080/{basePath}",
-            "description": "Development server",
-            "x-location": "California, USA",
-            "variables": {
-                "basePath": {
-                    "default": "v3"
-                },
-                "port": {
-                    "enum": [
-                        "8080"
-                    ],
-                    "default": "8080"
+tags:
+  - x-id: 'http://purl.bioontology.org/ontology/MESH/D016907'
+    name: Adverse Drug Reaction Reporting Systems
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+
+paths:
+  /contingencyTableCodes:
+    get:
+      tags:
+        - contingencyTable
+      description: Makes drug/outcome coded query and returns two by two contingency table.
+      summary: Uses drug and outcome codes in RxNorm and SNOMEDCT respectively to search AEOLUS and produce the corresponding contingency table.
+      x-accessRestriction: none
+      parameters:
+        - name: drugCode
+          in: query
+          description: >-
+            RxNorm drug code for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+            - 'http://purl.bioontology.org/ontology/RXNORM/'
+        - name: outcomeCode
+          in: query
+          description: >-
+            SNOMEDCT outcome code for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+           - 'http://identifiers.org/snomedct'
+      operationId: contingencyTableCodes
+      responses:
+        '200':
+          description: Successful response
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                  "items": {
+                    "properties": {
+                      "contingencyTable": {
+                        "properties": {
+                          "a": {
+                            "type": "integer"
+                          },
+                          "b": {
+                            "type": "integer"
+                          },
+                          "c": {
+                            "type": "integer"
+                          },
+                          "d": {
+                            "type": "integer"
+                          },                        
+                        },
+                        "type": "object"
+                      }
+                    }
+                  }
                 }
-            }
-        }
-    ],
-    "tags": [
-        {
-            "x-id": "http://purl.bioontology.org/ontology/MESH/D016907",
-            "name": "Adverse Drug Reaction Reporting Systems"
-        }
-    ],
-    "components": {
-        "schemas": {
-            "Category": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "name": {
-                        "type": "string"
+              }
+          }
+          x-responseSchema: 'http://www.w3.org/ns/anno.jsonld'
+          x-JSONLDContext: 'http://www.w3.org/ns/anno.jsonld'
+  
+  /contingencyTableNames:
+    get:
+      tags:
+        - contingencyTable
+      description: Makes drug/outcome coded query and returns two by two contingency table.
+      summary: Uses drug and outcome names in RxNorm and SNOMEDCT respectively to search AEOLUS and produce the corresponding contingency table.
+      x-accessRestriction: none
+      parameters:
+        - name: drugName
+          in: query
+          description: >-
+            RxNorm-standard drug name for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+            - 'http://purl.bioontology.org/ontology/RXNORM/'
+        - name: outcomeName
+          in: query
+          description: >-
+            SNOMEDCT-standard outcome name for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+           - 'http://identifiers.org/snomedct'
+      operationId: contingencyTableNames
+      responses:
+        '200':
+          description: Successful response
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                  "items": {
+                    "properties": {
+                      "contingencyTable": {
+                        "properties": {
+                          "a": {
+                            "type": "integer"
+                          },
+                          "b": {
+                            "type": "integer"
+                          },
+                          "c": {
+                            "type": "integer"
+                          },
+                          "d": {
+                            "type": "integer"
+                          },                        
+                        },
+                        "type": "object"
+                      }
                     }
+                  }
                 }
-            },
-            "Tag": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    "name": {
-                        "type": "string"
+              }
+          }
+          x-responseSchema: 'http://www.w3.org/ns/anno.jsonld'
+          x-JSONLDContext: 'http://www.w3.org/ns/anno.jsonld'
+
+  /PPRCodes:
+    get:
+      tags:
+        - proportionalReportingRatio
+      description: Returns the Proportional Reporting Ratio (PPR) for the drug/outcome coded query as well as the lower and upper 95% confidence intervals and the case count. Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)
+      summary: Uses drug and outcome codes in RxNorm and SNOMEDCT respectively to search AEOLUS and return the PPR, 95% confidence intervals and case count.
+      x-accessRestriction: none
+      parameters:
+        - name: drugCode
+          in: query
+          description: >-
+            RxNorm drug code for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+            - 'http://purl.bioontology.org/ontology/RXNORM/'
+        - name: outcomeCode
+          in: query
+          description: >-
+            SNOMEDCT outcome code for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+           - 'http://identifiers.org/snomedct'
+      operationId: pprCodes
+      responses:
+        '200':
+          description: Successful response
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                  "items": {
+                    "properties": {
+                      "pprStatistics": {
+                        "properties": {
+                          "ppr": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "casecount": {
+                            "type": "integer"
+                          },
+                          "upperCI": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "lowerCI": {
+                            "type": "string",
+                            "format": "float"
+                          },                        
+                        },
+                        "type": "object"
+                      }
                     }
+                  }
                 }
-            }
-        }
-    },
-    "paths": {
-        "/contingencyTableCodes": {
-            "get": {
-                "tags": [
-                    "contingencyTable"
-                ],
-                "description": "Makes drug/outcome coded query and returns two by two contingency table.",
-                "summary": "Uses drug and outcome codes in RxNorm and SNOMEDCT respectively to search AEOLUS and produce the corresponding contingency table.",
-                "x-accessRestriction": "none",
-                "parameters": [
-                    {
-                        "name": "drugCode",
-                        "in": "query",
-                        "description": "RxNorm drug code for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+              }
+          }
+          x-responseSchema: 'http://www.w3.org/ns/anno.jsonld'
+          x-JSONLDContext: 'http://www.w3.org/ns/anno.jsonld'
+          
+  /RORCodes:
+    get:
+      tags:
+        - reportingOddsRatio
+      description: Returns the Reporting Odds Ratio (ROR) for the drug/outcome coded query as well as the lower and upper 95% confidence intervals and the case count.Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)
+      summary: Uses drug and outcome codes in RxNorm and SNOMEDCT respectively to search AEOLUS and return the ROR, 95% confidence intervals and case count.
+      x-accessRestriction: none
+      parameters:
+        - name: drugCode
+          in: query
+          description: >-
+            RxNorm drug code for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+            - 'http://purl.bioontology.org/ontology/RXNORM/'
+        - name: outcomeCode
+          in: query
+          description: >-
+            SNOMEDCT outcome code for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+           - 'http://identifiers.org/snomedct'
+      operationId: rorCodes
+      responses:
+        '200':
+          description: Successful response
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                  "items": {
+                    "properties": {
+                      "pprStatistics": {
+                        "properties": {
+                          "ror": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "casecount": {
+                            "type": "integer"
+                          },
+                          "upperCI": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "lowerCI": {
+                            "type": "string",
+                            "format": "float"
+                          },                        
                         },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://purl.bioontology.org/ontology/RXNORM/"
-                        ]
-                    },
-                    {
-                        "name": "outcomeCode",
-                        "in": "query",
-                        "description": "SNOMEDCT outcome code for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://identifiers.org/snomedct"
-                        ]
+                        "type": "object"
+                      }
                     }
-                ],
-                "operationId": "contingencyTableCodes",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "contingencyTable": {
-                                                "properties": {
-                                                    "a": {
-                                                        "type": "integer"
-                                                    },
-                                                    "b": {
-                                                        "type": "integer"
-                                                    },
-                                                    "c": {
-                                                        "type": "integer"
-                                                    },
-                                                    "d": {
-                                                        "type": "integer"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "x-responseSchema": "http://www.w3.org/ns/anno.jsonld",
-                        "x-JSONLDContext": "http://www.w3.org/ns/anno.jsonld"
-                    }
+                  }
                 }
-            }
-        },
-        "/contingencyTableNames": {
-            "get": {
-                "tags": [
-                    "contingencyTable"
-                ],
-                "description": "Makes drug/outcome coded query and returns two by two contingency table.",
-                "summary": "Uses drug and outcome names in RxNorm and SNOMEDCT respectively to search AEOLUS and produce the corresponding contingency table.",
-                "x-accessRestriction": "none",
-                "parameters": [
-                    {
-                        "name": "drugName",
-                        "in": "query",
-                        "description": "RxNorm-standard drug name for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+              }
+          }
+          x-responseSchema: 'http://www.w3.org/ns/anno.jsonld'
+          x-JSONLDContext: 'http://www.w3.org/ns/anno.jsonld'     
+          
+  /PPRNames:
+    get:
+      tags:
+        - proportionalReportingRatio
+      description: Returns the Proportional Reporting Ratio (PPR) for the drug/outcome named query as well as the lower and upper 95% confidence intervals and the case count. Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)
+      summary: Uses drug and outcome names in RxNorm and SNOMEDCT respectively to search AEOLUS and return the PPR, 95% confidence intervals and case count.
+      x-accessRestriction: none
+      parameters:
+        - name: drugName
+          in: query
+          description: >-
+            RxNorm drug name for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+            - 'http://purl.bioontology.org/ontology/RXNORM/'
+        - name: outcomeName
+          in: query
+          description: >-
+            SNOMEDCT outcome name for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+           - 'http://identifiers.org/snomedct'
+      operationId: pprNames
+      responses:
+        '200':
+          description: Successful response
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                  "items": {
+                    "properties": {
+                      "pprStatistics": {
+                        "properties": {
+                          "ppr": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "casecount": {
+                            "type": "integer"
+                          },
+                          "upperCI": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "lowerCI": {
+                            "type": "string",
+                            "format": "float"
+                          },                        
                         },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://purl.bioontology.org/ontology/RXNORM/"
-                        ]
-                    },
-                    {
-                        "name": "outcomeName",
-                        "in": "query",
-                        "description": "SNOMEDCT-standard outcome name for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://identifiers.org/snomedct"
-                        ]
+                        "type": "object"
+                      }
                     }
-                ],
-                "operationId": "contingencyTableNames",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "contingencyTable": {
-                                                "properties": {
-                                                    "a": {
-                                                        "type": "integer"
-                                                    },
-                                                    "b": {
-                                                        "type": "integer"
-                                                    },
-                                                    "c": {
-                                                        "type": "integer"
-                                                    },
-                                                    "d": {
-                                                        "type": "integer"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "x-responseSchema": "http://www.w3.org/ns/anno.jsonld",
-                        "x-JSONLDContext": "http://www.w3.org/ns/anno.jsonld"
-                    }
+                  }
                 }
-            }
-        },
-        "/PPRCodes": {
-            "get": {
-                "tags": [
-                    "proportionalReportingRatio"
-                ],
-                "description": "Returns the Proportional Reporting Ratio (PPR) for the drug/outcome coded query as well as the lower and upper 95% confidence intervals and the case count. Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)",
-                "summary": "Uses drug and outcome codes in RxNorm and SNOMEDCT respectively to search AEOLUS and return the PPR, 95% confidence intervals and case count.",
-                "x-accessRestriction": "none",
-                "parameters": [
-                    {
-                        "name": "drugCode",
-                        "in": "query",
-                        "description": "RxNorm drug code for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+              }
+          }
+          x-responseSchema: 'http://www.w3.org/ns/anno.jsonld'
+          x-JSONLDContext: 'http://www.w3.org/ns/anno.jsonld'
+          
+  /RORNames:
+    get:
+      tags:
+        - reportingOddsRatio
+      description: Returns the Reporting Odds Ratio (ROR) for the drug/outcome named query as well as the lower and upper 95% confidence intervals and the case count.Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)
+      summary: Uses drug and outcome names in RxNorm and SNOMEDCT respectively to search AEOLUS and return the ROR, 95% confidence intervals and case count.
+      x-accessRestriction: none
+      parameters:
+        - name: drugName
+          in: query
+          description: >-
+            RxNorm drug name for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+            - 'http://purl.bioontology.org/ontology/RXNORM/'
+        - name: outcomeName
+          in: query
+          description: >-
+            SNOMEDCT outcome name for search
+          required: true
+          schema:
+            type: string
+          x-parameterType: InputParameter
+          x-valueType:
+           - 'http://identifiers.org/snomedct'
+      operationId: rorNames
+      responses:
+        '200':
+          description: Successful response
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                  "items": {
+                    "properties": {
+                      "pprStatistics": {
+                        "properties": {
+                          "ror": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "casecount": {
+                            "type": "integer"
+                          },
+                          "upperCI": {
+                            "type": "string",
+                            "format": "float"
+                          },
+                          "lowerCI": {
+                            "type": "string",
+                            "format": "float"
+                          },                        
                         },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://purl.bioontology.org/ontology/RXNORM/"
-                        ]
-                    },
-                    {
-                        "name": "outcomeCode",
-                        "in": "query",
-                        "description": "SNOMEDCT outcome code for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://identifiers.org/snomedct"
-                        ]
+                        "type": "object"
+                      }
                     }
-                ],
-                "operationId": "pprCodes",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "pprStatistics": {
-                                                "properties": {
-                                                    "ppr": {
-                                                        "type": "float"
-                                                    },
-                                                    "casecount": {
-                                                        "type": "integer"
-                                                    },
-                                                    "upperCI": {
-                                                        "type": "float"
-                                                    },
-                                                    "lowerCI": {
-                                                        "type": "float"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "x-responseSchema": "http://www.w3.org/ns/anno.jsonld",
-                        "x-JSONLDContext": "http://www.w3.org/ns/anno.jsonld"
-                    }
+                  }
                 }
-            }
-        },
-        "/RORCodes": {
-            "get": {
-                "tags": [
-                    "reportingOddsRatio"
-                ],
-                "description": "Returns the Reporting Odds Ratio (ROR) for the drug/outcome coded query as well as the lower and upper 95% confidence intervals and the case count.Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)",
-                "summary": "Uses drug and outcome codes in RxNorm and SNOMEDCT respectively to search AEOLUS and return the ROR, 95% confidence intervals and case count.",
-                "x-accessRestriction": "none",
-                "parameters": [
-                    {
-                        "name": "drugCode",
-                        "in": "query",
-                        "description": "RxNorm drug code for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://purl.bioontology.org/ontology/RXNORM/"
-                        ]
-                    },
-                    {
-                        "name": "outcomeCode",
-                        "in": "query",
-                        "description": "SNOMEDCT outcome code for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://identifiers.org/snomedct"
-                        ]
-                    }
-                ],
-                "operationId": "rorCodes",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "pprStatistics": {
-                                                "properties": {
-                                                    "ror": {
-                                                        "type": "float"
-                                                    },
-                                                    "casecount": {
-                                                        "type": "integer"
-                                                    },
-                                                    "upperCI": {
-                                                        "type": "float"
-                                                    },
-                                                    "lowerCI": {
-                                                        "type": "float"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "x-responseSchema": "http://www.w3.org/ns/anno.jsonld",
-                        "x-JSONLDContext": "http://www.w3.org/ns/anno.jsonld"
-                    }
-                }
-            }
-        },
-        "/PPRNames": {
-            "get": {
-                "tags": [
-                    "proportionalReportingRatio"
-                ],
-                "description": "Returns the Proportional Reporting Ratio (PPR) for the drug/outcome named query as well as the lower and upper 95% confidence intervals and the case count. Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)",
-                "summary": "Uses drug and outcome names in RxNorm and SNOMEDCT respectively to search AEOLUS and return the PPR, 95% confidence intervals and case count.",
-                "x-accessRestriction": "none",
-                "parameters": [
-                    {
-                        "name": "drugName",
-                        "in": "query",
-                        "description": "RxNorm drug name for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://purl.bioontology.org/ontology/RXNORM/"
-                        ]
-                    },
-                    {
-                        "name": "outcomeName",
-                        "in": "query",
-                        "description": "SNOMEDCT outcome name for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://identifiers.org/snomedct"
-                        ]
-                    }
-                ],
-                "operationId": "pprNames",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "pprStatistics": {
-                                                "properties": {
-                                                    "ppr": {
-                                                        "type": "float"
-                                                    },
-                                                    "casecount": {
-                                                        "type": "integer"
-                                                    },
-                                                    "upperCI": {
-                                                        "type": "float"
-                                                    },
-                                                    "lowerCI": {
-                                                        "type": "float"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "x-responseSchema": "http://www.w3.org/ns/anno.jsonld",
-                        "x-JSONLDContext": "http://www.w3.org/ns/anno.jsonld"
-                    }
-                }
-            }
-        },
-        "/RORNames": {
-            "get": {
-                "tags": [
-                    "reportingOddsRatio"
-                ],
-                "description": "Returns the Reporting Odds Ratio (ROR) for the drug/outcome named query as well as the lower and upper 95% confidence intervals and the case count.Calculations are made following [Gavali, D. K., Kulkarni, K. S., Kumar, A. & Chakraborty, B. S. Therapeutic class-specific signal detection of bradycardia associated with propranolol hydrochloride. Indian Journal of Pharmacology 41, 162–166 (2009).](http://www.ijp-online.com/text.asp?2009/41/4/162/56068)",
-                "summary": "Uses drug and outcome names in RxNorm and SNOMEDCT respectively to search AEOLUS and return the ROR, 95% confidence intervals and case count.",
-                "x-accessRestriction": "none",
-                "parameters": [
-                    {
-                        "name": "drugName",
-                        "in": "query",
-                        "description": "RxNorm drug name for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://purl.bioontology.org/ontology/RXNORM/"
-                        ]
-                    },
-                    {
-                        "name": "outcomeName",
-                        "in": "query",
-                        "description": "SNOMEDCT outcome name for search",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "x-parameterType": "InputParameter",
-                        "x-valueType": [
-                            "http://identifiers.org/snomedct"
-                        ]
-                    }
-                ],
-                "operationId": "rorNames",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "pprStatistics": {
-                                                "properties": {
-                                                    "ror": {
-                                                        "type": "float"
-                                                    },
-                                                    "casecount": {
-                                                        "type": "integer"
-                                                    },
-                                                    "upperCI": {
-                                                        "type": "float"
-                                                    },
-                                                    "lowerCI": {
-                                                        "type": "float"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "x-responseSchema": "http://www.w3.org/ns/anno.jsonld",
-                        "x-JSONLDContext": "http://www.w3.org/ns/anno.jsonld"
-                    }
-                }
-            }
-        }
-    }
-}
+              }
+          }
+          x-responseSchema: 'http://www.w3.org/ns/anno.jsonld'
+          x-JSONLDContext: 'http://www.w3.org/ns/anno.jsonld'            
