@@ -15,9 +15,9 @@ Documentation (temporary location): http://ec2-54-186-230-27.us-west-2.compute.a
 
 ## Repository content
 
-**AEOLUSsrsAPI-v1.0.json** Main JSON file with the smartAPI specification
-**java-client** This folder contains the Swagger auto-generated Java client
-**spring-server** This folder contains the Swagger auto-generates Java/Spring server. Instructions on how to build and deploy the server are listed bellow. 
+* **AEOLUSsrsAPI-v1.0.json** Main JSON file with the smartAPI specification
+* **java-client** This folder contains the Swagger auto-generated Java client
+* **spring-server** This folder contains the Swagger auto-generates Java/Spring server. Instructions on how to build and deploy the server are listed bellow. 
 
 ## Important
 Besides the API server, you will also need to download and install the AEOLUS data file from [Dryad](http://datadryad.org/resource/doi:10.5061/dryad.8q0s4)
