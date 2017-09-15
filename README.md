@@ -8,9 +8,9 @@ Documentation (temporary location): http://ec2-54-186-230-27.us-west-2.compute.a
 
 ## Project Goals
 
-* **Spec out an API for the AEOLUS resource:** Based on the most common queries recieved about the resource, provide API calls to answer these queries. 
+* **Spec out an API for the AEOLUS resource:** Based on the most common queries received about the resource, provide API calls to answer these queries. 
 * **Make the API a smartAPI v3.0:** This will allow the API to be discoverable and reusable while providing rich documentation about its functionality.
-* **Make output be JSONLD v1.1 compliant:** While most researcher will just need/want a basic JSON output to their queries. This resouce will provide additional semantics in the JSONLD for potential re-use of the data returned. 
+* **Make output be JSONLD v1.1 compliant:** While most researchers will just need/want a basic JSON output to their queries. This resource will provide additional semantics in the JSONLD for potential re-use of the data returned. 
 * **Register API with the smartAPI registry:** As part of the process of making the resource discoverable and available to the wider audience, the API will be registered in the registry.
 
 ## Repository content
