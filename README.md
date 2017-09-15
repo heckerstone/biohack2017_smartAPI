@@ -1,4 +1,5 @@
 ![Biohackathon2017Image](http://2017.biohackathon.org/bh17-logo.png)
+
 Project: Build a [smartAPI](http://smart-api.info/website/) for a Spontaneus Reporting System (SRS) for drug safety research purposes. More specifically FAERS data that was standardized and currated as the [OHDSI](https://www.ohdsi.org/) resource A curated and standardized adverse drug event resource to accelerate drug safety research (AEOLUS) published in [Nature Scientific data](https://www.nature.com/articles/sdata201626).
 
 Authors: [Juan M. Banda](http://jmbanda.com/)
